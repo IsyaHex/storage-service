@@ -3,6 +3,7 @@ package uz.epam.msa.storageservice.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.epam.msa.storageservice.dto.CreateStorageDTO;
 import uz.epam.msa.storageservice.dto.CreateStorageResponseDTO;
@@ -22,10 +23,11 @@ public class StorageController {
         this.service = service;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CreateStorageResponseDTO> uploadSong(@RequestBody CreateStorageDTO dto) {
+    public ResponseEntity<CreateStorageResponseDTO> uploadStorage(@RequestBody CreateStorageDTO dto) {
         CreateStorageResponseDTO response = service.createStorage(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -36,9 +38,10 @@ public class StorageController {
         return service.getStorages();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public DeletedStoragesDTO deleteSongs(@RequestParam(value = "id") @Max(200) String ids) {
+    public DeletedStoragesDTO deleteStorage(@RequestParam(value = "id") @Max(200) String ids) {
         return service.deleteStorages(ids);
     }
 }
